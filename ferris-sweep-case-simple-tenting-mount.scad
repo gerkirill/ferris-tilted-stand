@@ -1,20 +1,23 @@
-tenting_angle = 15; // degrees
+tenting_angle = 5; // degrees
 base_thickness = 2;
 support_base_thickness = 0.001;
 support_base_width = 6;
 wall_thickness = 2;
-wall_height = 6;
+wall_height = 8;
 clearance = 0.2;
 
 /* Hidden */
-file_name = "./Sweep_Case_Left_NO_TRRS_Breakout_8mm_Bumpon.stl";
-
+//  file_name = "./horyzontal-bordered-base.stl";
+//  file_name ="./Sweep_Case_Left_NO_TRRS_Breakout_8mm_Bumpon.stl";
+file_name = "./new-contour.svg";
 module case() {
     translate([
-        -10 + clearance + wall_thickness,
-        104 + clearance + wall_thickness,
+        0 + clearance + wall_thickness,
+        0 + clearance + wall_thickness,
         0
     ])
+    // this line is only for svg
+    linear_extrude(base_thickness)
     import(file_name);
 }
 

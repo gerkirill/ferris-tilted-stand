@@ -1,9 +1,9 @@
 tenting_angle = 0; // degrees
-base_thickness = 1;
+base_thickness = 2.4;
 support_base_thickness = 0;
 support_base_width = 6;
-wall_thickness = 2;
-wall_height = 4;
+wall_thickness = 3.6;
+wall_height = 4.6;
 clearance = 0.2;
 
 /* Hidden */
@@ -18,7 +18,7 @@ module case() {
         0
     ])
     linear_extrude(base_thickness)
-    import("./ferris-mount.svg");
+    import("./new-contour.svg");
     //import(file_name);
     // import("./ferris-mount.svg");
     // linear_extrude(base_thickness);
