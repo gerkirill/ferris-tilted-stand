@@ -5,10 +5,10 @@ support_base_width = 60; // was 6
 wall_thickness = 2;
 wall_height = 8.4;
 clearance = 0.6;
+makeCutters = false;
+auxCutoutDiameter = 10;
 
 /* Hidden */
-//  file_name = "./horyzontal-bordered-base.stl";
-//  file_name ="./Sweep_Case_Left_NO_TRRS_Breakout_8mm_Bumpon.stl";
 file_name = "./new-contour3.svg";
 module case() {
     translate([
@@ -53,45 +53,64 @@ module support() {
             projection() case();
         }
     }
+    
+    module aux_cutout() {
+        translate([
+            110 + clearance + wall_thickness,
+            30 + clearance + wall_thickness,
+            auxCutoutDiameter / 2
+        ])
+        union() {
+            translate([0, 0, auxCutoutDiameter / 2])
+            cube(size = [30, auxCutoutDiameter, auxCutoutDiameter], center = true);
+            rotate([0, 90, 0])
+            cylinder(h=30, d=auxCutoutDiameter, center=true);
+        }
+    }
 
     module support_walls() {
-        linear_extrude(support_base_thickness + wall_height)
         difference() {
-            offset(delta = clearance + wall_thickness)
-            projection() case();
-            
-            offset(delta = clearance)
-            projection() case();
+            linear_extrude(support_base_thickness + wall_height)
+            difference() {
+                offset(delta = clearance + wall_thickness)
+                projection() case();
+                
+                offset(delta = clearance)
+                projection() case();
+            };
+            aux_cutout();
         }
     }
     
+    module noop() {}
+    
     module cutters() {
-//        cutter_height = 1.05 * (wall_height + support_base_thickness);
-//        
-//        translate([90, 20, 0])
-//        cube([30, 55, cutter_height]);
-//        
-//        translate([100, 20, 0])
-//        rotate([0, 0, -25])
-//        cube([20, 20, cutter_height]);
-//        
-//        translate([10, 0, 0])
-//        cube([70, 30, cutter_height]);
-//        
-//        translate([65, 10, 0])
-//        rotate([0, 0, -25])
-//        cube([20, 20, cutter_height]);
-//        
-//        translate([65, 90, 0])
-//        rotate([0, 0, -15])
-//        cube([20, 20, cutter_height]);
-//        
-//        translate([15, 70, 0])
-//        rotate([0, 0, 30])
-//        cube([20, 20, cutter_height]);
-//        
-//        translate([20, 80, 0])
-//        cube([60, 30, cutter_height]);
+        cutter_height = 1.05 * (wall_height + support_base_thickness);
+        
+        translate([90, 20, 0])
+        cube([30, 55, cutter_height]);
+        
+        translate([100, 20, 0])
+        rotate([0, 0, -25])
+        cube([20, 20, cutter_height]);
+        
+        translate([10, 0, 0])
+        cube([70, 30, cutter_height]);
+        
+        translate([65, 10, 0])
+        rotate([0, 0, -25])
+        cube([20, 20, cutter_height]);
+        
+        translate([65, 90, 0])
+        rotate([0, 0, -15])
+        cube([20, 20, cutter_height]);
+        
+        translate([15, 70, 0])
+        rotate([0, 0, 30])
+        cube([20, 20, cutter_height]);
+        
+        translate([20, 80, 0])
+        cube([60, 30, cutter_height]);
     }
     
     translate([0, 0, base_thickness])
@@ -103,7 +122,9 @@ module support() {
                 support_base();
                 support_walls();
             }
-            translate([0, 0, -0.01]) cutters();
+            if (makeCutters) {
+                translate([0, 0, -0.01]) cutters();
+            }
         }
 
         difference() {
@@ -114,7 +135,9 @@ module support() {
                 linear_extrude(0.0001)
                 projection()
                 support_base();
-                translate([0, 0, -0.01]) cutters();
+                if (makeCutters) {
+                    translate([0, 0, -0.01]) cutters();
+                }
             }
             
             translate([0, 0, support_base_thickness])
@@ -127,5 +150,9 @@ module support() {
     }
 }
 
-base_plate();
-support();
+//projection(cut=true)
+//translate([0, 0, -5])
+union() {
+    base_plate();
+    support();
+}
