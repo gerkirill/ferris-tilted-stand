@@ -1,9 +1,9 @@
-tenting_angle = 4; // degrees
+tenting_angle = 0; // degrees, I think optimal for me is 4
 base_thickness = 0.4;// was 2
-support_base_thickness = 0.001;
+support_base_thickness = 0.6; // 0.001 for tenting
 support_base_width = 60; // was 6
-wall_thickness = 2;
-wall_height = 8.4;
+wall_thickness = 2; // I think optimal for me is 2
+wall_height = 4;// I think optimal for me is 8.4
 clearance = 0.6;
 makeCutters = false;
 auxCutoutDiameter = 10;
@@ -32,7 +32,48 @@ module case() {
 //    }
 //}
 
+module screwHole() {
+    difference() {
+        cylinder(h=2+support_base_thickness, d=5.4, center=false, $fn=50);
+        cylinder(h=2+support_base_thickness, d=1.4, center=false, $fn=50);
+    }
+    
+}
+
+module screwHoles() {
+    // bottom left
+    translate([
+        0 + clearance + wall_thickness + 21.5,
+        19 + clearance + wall_thickness + 15.5,
+        0
+    ])
+    screwHole();
+    // top left
+    translate([
+        0 + clearance + wall_thickness + 16.5,
+        78 + clearance + wall_thickness + 4,
+        0
+    ])
+    screwHole();
+    // bottom right
+    translate([
+        0 + clearance + wall_thickness + 103.2,
+        19 + clearance + wall_thickness + 3.5,
+        0
+    ])
+    screwHole();
+    // top right
+    translate([
+        0 + clearance + wall_thickness + 77.5,
+        19 + clearance + wall_thickness + 72.5,
+        0
+    ])
+    screwHole();
+}
+
 module base_plate() {
+    rotate([0, -tenting_angle, 0])
+    screwHoles();
     linear_extrude(base_thickness)
     projection()
     rotate([0, -tenting_angle, 0])
@@ -81,8 +122,6 @@ module support() {
             aux_cutout();
         }
     }
-    
-    module noop() {}
     
     module cutters() {
         cutter_height = 1.05 * (wall_height + support_base_thickness);
